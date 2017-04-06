@@ -2,7 +2,7 @@ Here are some useful queries for the [Stack Exchange Data Explorer](https://data
 
 
 ###Response time, number of Questions, number of views for questions each month. 
-```
+```SQL
 declare @FirstId int = (SELECT min(Id) FROM dbo.Posts WHERE PostTypeId = 1);
 DECLARE @FirstQuestion datetime = (SELECT CreationDate FROM dbo.Posts WHERE Id = @FirstId);
 DECLARE @LastQuestion datetime = (SELECT MAX(CreationDate) FROM dbo.Posts WHERE PostTypeId = 1);
@@ -165,7 +165,7 @@ FROM
     X.ViewCount AS numberOfViews,
    -- COUNT(TTA) OVER (PARTITION BY dateadd(month, datediff(month, '20000101', X.CreationDate) , '20000101')) numberOfQuestions,
    1 AS numberOfQuestions,
-    PERCENTILE_DISC(0.5) WITHIN GROUP (ORDER BY TTA) OVER (PARTITION BY dateadd(month, datediff(month, '20000101', X.CreationDate) , '20000101')) / 3600.0 Median
+    PERCENTILE_DISC(0.5) WITHIN GROUP (ORDER BY TTA) OVER (PARTITION BY dateadd(week, datediff(week, '20000101', X.CreationDate) , '20000101')) / 3600.0 Median
   FROM #AnswerTimes X
 ) RelevantQuestionsByWeek
 GROUP BY WeekNum, Yr
